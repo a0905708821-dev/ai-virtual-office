@@ -2,86 +2,335 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Virtual Office</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Virtual Office | Command Center</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#17212b;color:#edf3ed;font-family:Arial,"Microsoft JhengHei",sans-serif}
-header{padding:20px 5%;background:#202e38;border-bottom:3px solid #526b5b}
-h1{margin:0;font-size:25px}
-header p{color:#a9c1ad;margin:7px 0 0}
-main{max-width:1100px;margin:25px auto;padding:0 18px}
-.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.stat{background:#293a42;padding:14px 20px;border-radius:10px;flex:1;min-width:130px}
-.stat b{display:block;font-size:24px;color:#a8e6a1;margin-top:5px}
-.office{background:#b9a982;border:10px solid #765e43;border-radius:12px;padding:20px;min-height:390px;position:relative}
-.office h2{color:#3e382c;margin:0 0 20px}
-.floor{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.desk{background:#d8c69c;border:4px solid #92734d;border-radius:8px;padding:15px 8px;text-align:center;min-height:220px;cursor:pointer;color:#302d25;transition:.2s}
-.desk:hover{transform:translateY(-4px);background:#eadbb5}
-.person{font-size:48px;margin:8px}
-.computer{font-size:27px}
+body{margin:0;background:#111c27;color:#eaf1f5;font-family:Arial,"Microsoft JhengHei",sans-serif}
+header{padding:20px 5%;background:#1c2b38;border-bottom:2px solid #6da58b;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{margin:0;font-size:24px}
+header p{margin:6px 0 0;color:#9db8ac}
+main{max-width:1250px;margin:25px auto;padding:0 18px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+button{border:0;border-radius:7px;padding:10px 15px;background:#344957;color:white;cursor:pointer;font-weight:bold}
+button:hover{filter:brightness(1.2)}
+button.active,.primary{background:#75bd91;color:#10251a}
+.danger{background:#8d4545}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.card{background:#243643;border:1px solid #344b57;border-radius:10px;padding:17px}
+.stat b{display:block;font-size:28px;color:#9fe5ad;margin-top:8px}
+h2{font-size:19px;margin-top:0}
+h3{font-size:16px}
+.office{background:#bca982;border:9px solid #725a40;border-radius:12px;padding:20px;color:#302d25}
+.floor{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.desk{background:#e0cea5;border:4px solid #96764e;border-radius:9px;padding:16px;text-align:center;cursor:pointer;color:#302d25;min-height:190px}
+.desk:hover{transform:translateY(-3px)}
+.person{font-size:46px;margin:5px}
 .name{font-weight:bold;font-size:17px}
-.task{font-size:13px;margin-top:7px}
-.status{display:inline-block;padding:5px 10px;border-radius:20px;background:#d5efc7;color:#31552c;font-size:12px;margin-top:10px}
-.panel{background:#293a42;padding:20px;border-radius:10px;margin-top:20px;line-height:1.8}
-.panel h2{margin-top:0}
-button{background:#a8e6a1;border:0;border-radius:7px;padding:10px 16px;cursor:pointer;font-weight:bold}
-footer{text-align:center;color:#91a49a;padding:25px}
-@media(max-width:650px){.floor{grid-template-columns:1fr}.desk{min-height:170px}}
+.task{font-size:13px;margin:8px}
+.status{display:inline-block;padding:5px 10px;border-radius:20px;background:#d5efc7;color:#31552c;font-size:12px}
+.status.working{background:#d5efc7}
+.status.idle{background:#e8e3c8;color:#66562b}
+.status.done{background:#c9dff4;color:#234b72}
+.status.offline{background:#e8caca;color:#762e2e}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+input,select,textarea{width:100%;padding:11px;border-radius:7px;border:1px solid #536975;background:#172631;color:white;margin:7px 0 13px}
+label{font-size:13px;color:#b8c9cc}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.task-item,.log-item{border-bottom:1px solid #40535e;padding:12px 0}
+.task-item:last-child,.log-item:last-child{border:0}
+.small{font-size:12px;color:#a9bdc2}
+.hidden{display:none}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.empty{color:#9eb1b8;padding:15px 0}
+footer{text-align:center;color:#84999e;padding:25px}
+@media(max-width:700px){
+.stats{grid-template-columns:repeat(2,1fr)}
+.floor{grid-template-columns:1fr}
+.grid{grid-template-columns:1fr}
+header h1{font-size:20px}
+}
 </style>
 </head>
 <body>
 <header>
+<div>
 <h1>🏢 AI Virtual Office</h1>
-<p>我的 AI 團隊指揮中心｜虛擬辦公室 v0.1</p>
+<p>AI 團隊指揮中心 · v0.2</p>
+</div>
+<div>🟢 本機資料模式</div>
 </header>
+
 <main>
+<nav>
+<button class="active" onclick="showPage('dashboard',this)">🏢 指揮中心</button>
+<button onclick="showPage('tasks',this)">📋 任務派遣</button>
+<button onclick="showPage('staff',this)">👥 員工管理</button>
+<button onclick="showPage('logs',this)">📜 工作日誌</button>
+</nav>
+
+<section id="dashboard">
 <div class="stats">
-<div class="stat">員工總數<b id="total">3</b></div>
-<div class="stat">工作中<b id="working">2</b></div>
-<div class="stat">待命中<b id="idle">1</b></div>
+<div class="card stat">員工總數<b id="total">0</b></div>
+<div class="card stat">進行中任務<b id="working">0</b></div>
+<div class="card stat">待處理任務<b id="pending">0</b></div>
+<div class="card stat">已完成任務<b id="completed">0</b></div>
 </div>
-<section class="office">
-<h2>🪴 辦公室一樓</h2>
-<div class="floor">
-<div class="desk" onclick="showEmployee('Chief of Staff','AI 團隊主管','正在統籌團隊任務與工作安排。')">
-<div class="person">👨🏻‍💻</div>
-<div class="computer">🖥️</div>
-<div class="name">Chief of Staff</div>
-<div class="task">團隊管理</div>
-<span class="status">工作中</span>
+
+<div class="office">
+<h2>🪴 AI 辦公室</h2>
+<div class="floor" id="officeFloor"></div>
 </div>
-<div class="desk" onclick="showEmployee('Miso','AI 自動化助理','負責瀏覽器操作、網站研究與自動化任務。')">
-<div class="person">🧑🏻‍💻</div>
-<div class="computer">💻</div>
-<div class="name">Miso</div>
-<div class="task">自動化助理</div>
-<span class="status">待命中</span>
+
+<div class="grid" style="margin-top:18px">
+<div class="card">
+<h2>📌 最新任務</h2>
+<div id="recentTasks"></div>
 </div>
-<div class="desk" onclick="showEmployee('Researcher','AI 研究員','負責資料搜尋、資訊整理與研究報告。')">
-<div class="person">👩🏻‍💻</div>
-<div class="computer">🖥️</div>
-<div class="name">Researcher</div>
-<div class="task">資料研究</div>
-<span class="status">工作中</span>
+<div class="card">
+<h2>📊 團隊公告</h2>
+<p>歡迎來到 AI 虛擬公司。</p>
+<p class="small">目前資料由管理者手動更新，尚未連接 MausBot 即時執行狀態。</p>
 </div>
 </div>
 </section>
-<section class="panel" id="detail">
-<h2>📋 員工資訊</h2>
-點擊辦公室裡的員工，可以查看他的職務與任務。
+
+<section id="tasks" class="hidden">
+<div class="grid">
+<div class="card">
+<h2>➕ 建立新任務</h2>
+<label>任務名稱</label>
+<input id="taskName" placeholder="例如：整理今日金融新聞">
+<label>任務說明</label>
+<textarea id="taskDesc" rows="3" placeholder="請描述工作內容與交付成果"></textarea>
+<label>指派員工</label>
+<select id="taskStaff"></select>
+<label>優先級</label>
+<select id="taskPriority">
+<option>一般</option><option>高</option><option>緊急</option>
+</select>
+<button class="primary" onclick="addTask()">建立並派遣任務</button>
+</div>
+<div class="card">
+<h2>📋 任務統計</h2>
+<p>待處理：<b id="p2">0</b></p>
+<p>進行中：<b id="w2">0</b></p>
+<p>已完成：<b id="c2">0</b></p>
+</div>
+</div>
+<div class="card" style="margin-top:16px">
+<h2>任務清單</h2>
+<div id="taskList"></div>
+</div>
 </section>
+
+<section id="staff" class="hidden">
+<div class="grid">
+<div class="card">
+<h2>➕ 新增 AI 員工</h2>
+<label>員工名稱</label>
+<input id="staffName" placeholder="例如：Analyst">
+<label>職位</label>
+<input id="staffRole" placeholder="例如：金融研究員">
+<label>角色圖示</label>
+<select id="staffEmoji">
+<option>👨🏻‍💻</option><option>👩🏻‍💻</option><option>🤖</option><option>🧑🏻‍💻</option>
+</select>
+<button class="primary" onclick="addStaff()">新增員工</button>
+</div>
+<div class="card">
+<h2>員工管理說明</h2>
+<p>每位員工可以被指派任務，並記錄執行狀態。</p>
+<p class="small">目前新增員工只會建立管理資料，不會自動建立 MausBot Bot。</p>
+</div>
+</div>
+<div class="card" style="margin-top:16px">
+<h2>員工名冊</h2>
+<div id="staffList"></div>
+</div>
+</section>
+
+<section id="logs" class="hidden">
+<div class="card">
+<div class="row">
+<h2>📜 工作日誌</h2>
+<button onclick="clearLogs()" class="danger">清除日誌</button>
+</div>
+<div id="logList"></div>
+</div>
+</section>
+
+<section id="detail" class="card hidden" style="margin-top:18px"></section>
 </main>
-<footer>AI Virtual Office · 第一版展示介面</footer>
+
+<footer>AI Virtual Office · Team Management System</footer>
+
 <script>
-function showEmployee(name,role,task){
-document.getElementById('detail').innerHTML=
-'<h2>👤 '+name+'</h2>'+
-'<p><b>職務：</b>'+role+'</p>'+
-'<p><b>目前任務：</b>'+task+'</p>'+
-'<p>注意：目前顯示的是展示資料，尚未連接 MausBot 的即時工作狀態。</p>';
+const initialStaff=[
+{id:1,name:"Chief of Staff",role:"AI 團隊主管",emoji:"👨🏻‍💻"},
+{id:2,name:"Miso",role:"自動化助理",emoji:"🧑🏻‍💻"},
+{id:3,name:"Researcher",role:"資料研究員",emoji:"👩🏻‍💻"}
+];
+
+let staff=JSON.parse(localStorage.getItem("officeStaff")||"null")||initialStaff;
+let tasks=JSON.parse(localStorage.getItem("officeTasks")||"[]");
+let logs=JSON.parse(localStorage.getItem("officeLogs")||"[]");
+
+function save(){
+localStorage.setItem("officeStaff",JSON.stringify(staff));
+localStorage.setItem("officeTasks",JSON.stringify(tasks));
+localStorage.setItem("officeLogs",JSON.stringify(logs));
+render();
 }
+
+function log(message){
+logs.unshift({time:new Date().toLocaleString("zh-TW"),message});
+logs=logs.slice(0,100);
+}
+
+function statusOf(id){
+let active=tasks.find(t=>t.staff==id&&t.status==="進行中");
+if(active)return "工作中";
+return "待命中";
+}
+
+function showPage(id,btn){
+document.querySelectorAll("main>section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+document.getElementById("detail").classList.add("hidden");
+}
+
+function addTask(){
+let name=document.getElementById("taskName").value.trim();
+if(!name)return alert("請輸入任務名稱");
+let id=Number(document.getElementById("taskStaff").value);
+let task={
+id:Date.now(),name,
+desc:document.getElementById("taskDesc").value,
+staff:id,
+priority:document.getElementById("taskPriority").value,
+status:"待處理",
+created:new Date().toLocaleString("zh-TW")
+};
+tasks.unshift(task);
+log("建立任務："+name+"，指派給 "+staff.find(s=>s.id===id).name);
+document.getElementById("taskName").value="";
+document.getElementById("taskDesc").value="";
+save();
+alert("任務已建立！");
+}
+
+function addStaff(){
+let name=document.getElementById("staffName").value.trim();
+let role=document.getElementById("staffRole").value.trim();
+if(!name||!role)return alert("請填寫員工名稱和職位");
+let id=Date.now();
+staff.push({id,name,role,emoji:document.getElementById("staffEmoji").value});
+log("新增員工："+name);
+document.getElementById("staffName").value="";
+document.getElementById("staffRole").value="";
+save();
+}
+
+function changeTask(id,status){
+let t=tasks.find(x=>x.id===id);
+if(!t)return;
+t.status=status;
+log("任務「"+t.name+"」狀態更新為："+status);
+save();
+}
+
+function deleteTask(id){
+if(!confirm("確定刪除此任務？"))return;
+let t=tasks.find(x=>x.id===id);
+tasks=tasks.filter(x=>x.id!==id);
+log("刪除任務："+t.name);
+save();
+}
+
+function removeStaff(id){
+if(tasks.some(t=>t.staff===id&&t.status!=="已完成")){
+return alert("這位員工還有未完成任務，請先處理任務。");
+}
+let s=staff.find(x=>x.id===id);
+if(!confirm("確定移除 "+s.name+"？"))return;
+staff=staff.filter(x=>x.id!==id);
+log("移除員工："+s.name);
+save();
+}
+
+function showEmployee(id){
+let s=staff.find(x=>x.id===id);
+let assigned=tasks.filter(t=>t.staff===id);
+let box=document.getElementById("detail");
+box.classList.remove("hidden");
+box.innerHTML="<h2>"+s.emoji+" "+s.name+"</h2><p>"+s.role+"</p><h3>任務紀錄</h3>"+
+(assigned.length?assigned.map(t=>"<p>"+t.name+" — "+t.status+"</p>").join(""):"<p>目前沒有任務</p>");
+box.scrollIntoView({behavior:"smooth"});
+}
+
+function clearLogs(){
+if(!confirm("確定清除所有工作日誌？"))return;
+logs=[];
+save();
+}
+
+function render(){
+let working=tasks.filter(t=>t.status==="進行中").length;
+let pending=tasks.filter(t=>t.status==="待處理").length;
+let completed=tasks.filter(t=>t.status==="已完成").length;
+document.getElementById("total").textContent=staff.length;
+document.getElementById("working").textContent=working;
+document.getElementById("pending").textContent=pending;
+document.getElementById("completed").textContent=completed;
+document.getElementById("p2").textContent=pending;
+document.getElementById("w2").textContent=working;
+document.getElementById("c2").textContent=completed;
+
+document.getElementById("officeFloor").innerHTML=staff.map(s=>{
+let active=tasks.find(t=>t.staff===s.id&&t.status==="進行中");
+return `<div class="desk" onclick="showEmployee(${s.id})">
+<div class="person">${s.emoji}</div>
+<div>🖥️</div><div class="name">${s.name}</div>
+<div class="task">${s.role}</div>
+<span class="status ${active?'working':'idle'}">${active?'工作中':'待命中'}</span>
+${active?`<div class="task">${active.name}</div>`:""}
+</div>`;
+}).join("");
+
+document.getElementById("taskStaff").innerHTML=staff.map(s=>`<option value="${s.id}">${s.name}</option>`).join("");
+
+document.getElementById("taskList").innerHTML=tasks.length?tasks.map(t=>{
+let s=staff.find(x=>x.id===t.staff);
+return `<div class="task-item">
+<div class="row"><b>${t.name}</b><span>${t.priority} · ${t.status}</span></div>
+<p class="small">${s?s.name:"已移除員工"} · ${t.created}</p>
+<p>${t.desc||"沒有補充說明"}</p>
+<div class="actions">
+<button onclick="changeTask(${t.id},'進行中')">開始</button>
+<button onclick="changeTask(${t.id},'已完成')">完成</button>
+<button onclick="changeTask(${t.id},'待處理')">重設</button>
+<button class="danger" onclick="deleteTask(${t.id})">刪除</button>
+</div></div>`;
+}).join(""):'<p class="empty">目前沒有任務。</p>';
+
+document.getElementById("staffList").innerHTML=staff.map(s=>`
+<div class="task-item row">
+<div><b>${s.emoji} ${s.name}</b><div class="small">${s.role}</div></div>
+<button class="danger" onclick="removeStaff(${s.id})">移除</button>
+</div>`).join("");
+
+document.getElementById("recentTasks").innerHTML=tasks.length?
+tasks.slice(0,5).map(t=>`<div class="task-item">${t.name}<div class="small">${t.status} · ${t.priority}</div></div>`).join("")
+:'<p class="empty">尚未建立任務。</p>';
+
+document.getElementById("logList").innerHTML=logs.length?
+logs.map(l=>`<div class="log-item"><div class="small">${l.time}</div>${l.message}</div>`).join("")
+:'<p class="empty">尚無工作紀錄。</p>';
+}
+render();
 </script>
 </body>
 </html>
