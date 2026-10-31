@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Virtual Office</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#17212b;color:#edf3ed;font-family:Arial,"Microsoft JhengHei",sans-serif}
+header{padding:20px 5%;background:#202e38;border-bottom:3px solid #526b5b}
+h1{margin:0;font-size:25px}
+header p{color:#a9c1ad;margin:7px 0 0}
+main{max-width:1100px;margin:25px auto;padding:0 18px}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.stat{background:#293a42;padding:14px 20px;border-radius:10px;flex:1;min-width:130px}
+.stat b{display:block;font-size:24px;color:#a8e6a1;margin-top:5px}
+.office{background:#b9a982;border:10px solid #765e43;border-radius:12px;padding:20px;min-height:390px;position:relative}
+.office h2{color:#3e382c;margin:0 0 20px}
+.floor{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.desk{background:#d8c69c;border:4px solid #92734d;border-radius:8px;padding:15px 8px;text-align:center;min-height:220px;cursor:pointer;color:#302d25;transition:.2s}
+.desk:hover{transform:translateY(-4px);background:#eadbb5}
+.person{font-size:48px;margin:8px}
+.computer{font-size:27px}
+.name{font-weight:bold;font-size:17px}
+.task{font-size:13px;margin-top:7px}
+.status{display:inline-block;padding:5px 10px;border-radius:20px;background:#d5efc7;color:#31552c;font-size:12px;margin-top:10px}
+.panel{background:#293a42;padding:20px;border-radius:10px;margin-top:20px;line-height:1.8}
+.panel h2{margin-top:0}
+button{background:#a8e6a1;border:0;border-radius:7px;padding:10px 16px;cursor:pointer;font-weight:bold}
+footer{text-align:center;color:#91a49a;padding:25px}
+@media(max-width:650px){.floor{grid-template-columns:1fr}.desk{min-height:170px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🏢 AI Virtual Office</h1>
+<p>我的 AI 團隊指揮中心｜虛擬辦公室 v0.1</p>
+</header>
+<main>
+<div class="stats">
+<div class="stat">員工總數<b id="total">3</b></div>
+<div class="stat">工作中<b id="working">2</b></div>
+<div class="stat">待命中<b id="idle">1</b></div>
+</div>
+<section class="office">
+<h2>🪴 辦公室一樓</h2>
+<div class="floor">
+<div class="desk" onclick="showEmployee('Chief of Staff','AI 團隊主管','正在統籌團隊任務與工作安排。')">
+<div class="person">👨🏻‍💻</div>
+<div class="computer">🖥️</div>
+<div class="name">Chief of Staff</div>
+<div class="task">團隊管理</div>
+<span class="status">工作中</span>
+</div>
+<div class="desk" onclick="showEmployee('Miso','AI 自動化助理','負責瀏覽器操作、網站研究與自動化任務。')">
+<div class="person">🧑🏻‍💻</div>
+<div class="computer">💻</div>
+<div class="name">Miso</div>
+<div class="task">自動化助理</div>
+<span class="status">待命中</span>
+</div>
+<div class="desk" onclick="showEmployee('Researcher','AI 研究員','負責資料搜尋、資訊整理與研究報告。')">
+<div class="person">👩🏻‍💻</div>
+<div class="computer">🖥️</div>
+<div class="name">Researcher</div>
+<div class="task">資料研究</div>
+<span class="status">工作中</span>
+</div>
+</div>
+</section>
+<section class="panel" id="detail">
+<h2>📋 員工資訊</h2>
+點擊辦公室裡的員工，可以查看他的職務與任務。
+</section>
+</main>
+<footer>AI Virtual Office · 第一版展示介面</footer>
+<script>
+function showEmployee(name,role,task){
+document.getElementById('detail').innerHTML=
+'<h2>👤 '+name+'</h2>'+
+'<p><b>職務：</b>'+role+'</p>'+
+'<p><b>目前任務：</b>'+task+'</p>'+
+'<p>注意：目前顯示的是展示資料，尚未連接 MausBot 的即時工作狀態。</p>';
+}
+</script>
+</body>
+</html>
